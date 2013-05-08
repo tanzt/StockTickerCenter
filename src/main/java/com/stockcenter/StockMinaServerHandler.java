@@ -9,7 +9,7 @@ import com.util.mina.RandomUtil;
 
 import java.util.List;
 import java.util.ListIterator;
-import java.util.concurrent.atomic.AtomicInteger;
+
 
 /**
  * 行情消息处理器
@@ -33,14 +33,15 @@ public class StockMinaServerHandler extends IoHandlerAdapter {
 		while(it.hasNext()){
 			String stockMsg = (String) it.next();
 			session.write(stockMsg);
-			System.out.println("[Server log]:股票消息中间件初始化连接交易中心后，向"+session.getRemoteAddress()+"发送全部缓存股票行情信息："+stockMsg);
+
+			System.out.println("[Server log]:When there is a new connection to Stock Exchange Center for the first time，send to "+session.getRemoteAddress()+"with all Cached stock data："+stockMsg+"\n");
 		}		
 		while(session.isConnected())
 		{
 			Thread.sleep(RandomUtil.RandomInt(10)*500); //每隔随机时间向消息中间件发送股票行情信息
 			String randomStockExchangeMsg = stockExchangeServiceImpl.getRandomStockInfo();
 			session.write(randomStockExchangeMsg);
-			System.out.println("[Server log]:交易中心向股票消息中间件"+session.getRemoteAddress()+"发送实时股票交易行情信息"+randomStockExchangeMsg);	
+			System.out.println("[Server log]:Stock Exchange Center send to "+session.getRemoteAddress()+"with real time Stock Exchange data:"+randomStockExchangeMsg+"\n");	
 		}
 	}
 	
